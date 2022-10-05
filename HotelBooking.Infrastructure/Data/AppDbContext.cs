@@ -17,6 +17,7 @@ namespace HotelBooking.Infrastructure.Data
         }
         public DbSet<Facility> Facilities { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<Domain.Entities.BookingTransactionRequest> BookingTransactionRequests { get; set; }
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -37,5 +38,13 @@ namespace HotelBooking.Infrastructure.Data
 
             return base.SaveChangesAsync(cancellationToken);
         }
+
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Domain.Entities.Hotel>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)")
+                .HasPrecision(18, 2);
+        }*/
     }
 }

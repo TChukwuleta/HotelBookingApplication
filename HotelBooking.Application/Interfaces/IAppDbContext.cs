@@ -12,6 +12,7 @@ namespace HotelBooking.Application.Interfaces
     {
         DbSet<Domain.Entities.Facility> Facilities { get; set; }
         DbSet<Domain.Entities.Hotel> Hotels { get; set; }
+        DbSet<Domain.Entities.BookingTransactionRequest> BookingTransactionRequests { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

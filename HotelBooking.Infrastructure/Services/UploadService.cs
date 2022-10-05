@@ -60,21 +60,21 @@ namespace HotelBooking.Infrastructure.Services
             }
         }
 
-        public async Task<string> UploadImage(string username, string userid)
+        public async Task<string> UploadImage(string image)
         {
             try
             {
-                var fileLocation = Directory.GetCurrentDirectory() + $"\\{username}_{userid}.jpg";
+                //var fileLocation = Directory.GetCurrentDirectory() + $"\\{username}_{userid}.jpg";
                 Account account = new Account
                 {
-                    ApiKey = _config["cloudinary:key"],
-                    ApiSecret = _config["cloudinary:secret"],
-                    Cloud = _config["cloudinary:cloudname"]
+                    ApiKey = _config["Cloudinary:ApiKey"],
+                    ApiSecret = _config["Cloudinary:ApiSecret"],
+                    Cloud = _config["Cloudinary:CloudName"]
                 };
                 Cloudinary cloudinary = new Cloudinary(account);
                 var uploadParams = new ImageUploadParams()
                 {
-                    File = new FileDescription(fileLocation)
+                    File = new FileDescription(image)
                 };
 
                 var uploadResult = await cloudinary.UploadAsync(uploadParams);
@@ -84,13 +84,12 @@ namespace HotelBooking.Infrastructure.Services
                 }
 
                 //var fileUrl = uploadResult.Uri.ToString();
-                string fileUrl = uploadResult.SecureUri.AbsoluteUri;
+                string fileUrl = uploadResult.SecureUrl.AbsoluteUri;
 
                 return fileUrl;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }

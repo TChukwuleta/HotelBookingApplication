@@ -8,7 +8,7 @@ namespace HotelBooking.Application.Interfaces
 {
     public interface IUploadService
     {
-        Task<string> UploadImage(string username, string userid);
+        Task<string> UploadImage(string image);
         Task<string> FromBase64ToFile(string base64File, string filename);
     }
 }

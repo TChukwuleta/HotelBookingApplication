@@ -17,6 +17,7 @@ namespace HotelBooking.Application.Hotel.Commands
         public List<int> FacilityType { get; set; }
         public string Description { get; set; }
         public string Base64Image { get; set; }
+        public string Extension { get; set; }
         public decimal Price { get; set; }
         public int Rating { get; set; }
     }
@@ -38,7 +39,13 @@ namespace HotelBooking.Application.Hotel.Commands
                 {
                     return Result.Failure("Rating should be between 0 and 5");
                 }
-                var fileUrl = await _uploadService.UploadImage(request.Name, request.Address);
+                string fileUrl = default;
+                if (!string.IsNullOrEmpty(request.Base64Image))
+                {
+                    var fileName = $"{request.Name}_{DateTime.Now.Ticks}.{request.Extension}";
+                    //var imageByte = Convert.FromBase64String(request.Base64Image);
+                    fileUrl = await _uploadService.UploadImage(request.Base64Image);
+                }
                 if (string.IsNullOrEmpty(fileUrl))
                 {
                     return Result.Failure("An error occured");
@@ -54,7 +61,8 @@ namespace HotelBooking.Application.Hotel.Commands
                             FacilityType = facilityType,
                             FacilityTypeDesc = facilityType.ToString(),
                             CreatedDate = DateTime.Now,
-                            Status = Status.Available
+                            Status = Status.Available,
+                            StatusDesc = Status.Available.ToString()
                         });
                     }
                     await _context.Facilities.AddRangeAsync(facilities);
@@ -63,10 +71,12 @@ namespace HotelBooking.Application.Hotel.Commands
                 {
                     Name = request.Name,
                     Address = request.Address,
+                    Image = fileUrl,
                     Description = request.Description,
                     Rating = request.Rating,
                     Price = request.Price,
                     Status = Status.UnderReview,
+                    StatusDesc = Status.UnderReview.ToString(),
                     Facility = facilities,
                     CreatedDate = DateTime.Now
                 };
