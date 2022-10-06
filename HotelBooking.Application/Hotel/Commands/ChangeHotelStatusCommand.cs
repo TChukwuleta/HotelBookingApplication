@@ -1,4 +1,5 @@
 ﻿using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.IRepositories;
 using HotelBooking.Application.Model;
 using HotelBooking.Domain.Enums;
 using MediatR;
@@ -18,16 +19,16 @@ namespace HotelBooking.Application.Hotel.Commands
 
     public class ChangeHotelStatusCommandHandler : IRequestHandler<ChangeHotelStatusCommand, Result>
     {
-        private readonly IAppDbContext _context;
-        public ChangeHotelStatusCommandHandler(IAppDbContext context)
+        private readonly IHotelRepository _hotelRepository;
+        public ChangeHotelStatusCommandHandler(IHotelRepository hotelRepository)
         {
-            _context = context;
+            _hotelRepository = hotelRepository;
         }
         public async Task<Result> Handle(ChangeHotelStatusCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var hotel = await _context.Hotels.FirstOrDefaultAsync(c => c.Id == request.HotelId);
+                var hotel = await _hotelRepository.GetByIdAsync(request.HotelId);
                 if(hotel == null)
                 {
                     return Result.Failure("Invalid hotel selected");
@@ -35,17 +36,17 @@ namespace HotelBooking.Application.Hotel.Commands
                 string message = default;
                 switch (hotel.Status)
                 {
-                    case Domain.Enums.Status.Available:
+                    case Status.Available:
                         hotel.Status = Status.NotAvailable;
                         hotel.StatusDesc = Status.NotAvailable.ToString();
                         message = "Hotel is now not available";
                         break;
-                    case Domain.Enums.Status.UnderReview:
+                    case Status.UnderReview:
                         hotel.Status = Status.Available;
                         hotel.StatusDesc = Status.Available.ToString();
                         message = "Hotel is now available";
                         break;
-                    case Domain.Enums.Status.NotAvailable:
+                    case Status.NotAvailable:
                         hotel.Status = Status.Available;
                         hotel.StatusDesc = Status.Available.ToString();
                         message = "Hotel is now available";
@@ -53,8 +54,7 @@ namespace HotelBooking.Application.Hotel.Commands
                     default:
                         break;
                 }
-                await _context.Hotels.AddAsync(hotel);
-                await _context.SaveChangesAsync(cancellationToken);
+                await _hotelRepository.UpdateAsync(hotel);
                 return Result.Success(message);
             }
             catch (Exception ex)

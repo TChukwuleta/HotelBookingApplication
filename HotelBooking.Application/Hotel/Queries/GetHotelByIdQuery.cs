@@ -1,4 +1,5 @@
 ﻿using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.IRepositories;
 using HotelBooking.Application.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,17 +17,17 @@ namespace HotelBooking.Application.Hotel.Queries
     } 
     public class GetHotelByIdQueryHandler : IRequestHandler<GetHotelByIdQuery, Result>
     {
-        private readonly IAppDbContext _context;
-        public GetHotelByIdQueryHandler(IAppDbContext context)
+        private readonly IHotelRepository _hotelRepository;
+        public GetHotelByIdQueryHandler(IHotelRepository hotelRepository)
         {
-            _context = context;
+            _hotelRepository = hotelRepository;
         }
 
         public async Task<Result> Handle(GetHotelByIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var hotel = await _context.Hotels.Include(c => c.Facility).FirstOrDefaultAsync(c => c.Id == request.HotelId);
+                var hotel = await _hotelRepository.GetByIdAsync(request.HotelId);
                 if(hotel == null)
                 {
                     return Result.Failure("Invalid Hotel selected");

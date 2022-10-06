@@ -1,4 +1,5 @@
 ﻿using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.IRepositories;
 using HotelBooking.Application.Model;
 using HotelBooking.Domain.Enums;
 using MediatR;
@@ -23,12 +24,12 @@ namespace HotelBooking.Application.Hotel.Commands
     }
     public class CreateHotelCommandHandler : IRequestHandler<CreateHotelCommand, Result>
     {
-        private readonly IAppDbContext _context;
         private readonly IUploadService _uploadService;
-        public CreateHotelCommandHandler(IAppDbContext context, IUploadService uploadService)
+        private readonly IHotelRepository _hotelRepository;
+        public CreateHotelCommandHandler(IUploadService uploadService, IHotelRepository hotelRepository)
         {
-            _context = context;
             _uploadService = uploadService;
+            _hotelRepository = hotelRepository;
         }
 
         public async Task<Result> Handle(CreateHotelCommand request, CancellationToken cancellationToken)
@@ -39,8 +40,8 @@ namespace HotelBooking.Application.Hotel.Commands
                 {
                     return Result.Failure("Rating should be between 0 and 5");
                 }
-                string fileUrl = default;
-                if (!string.IsNullOrEmpty(request.Base64Image))
+                var fileUrl = string.IsNullOrEmpty(request.Base64Image) ? $"{request.Name}.jpeg" : await _uploadService.UploadImage(request.Base64Image);
+                /*if (!string.IsNullOrEmpty(request.Base64Image))
                 {
                     var fileName = $"{request.Name}_{DateTime.Now.Ticks}.{request.Extension}";
                     //var imageByte = Convert.FromBase64String(request.Base64Image);
@@ -49,7 +50,7 @@ namespace HotelBooking.Application.Hotel.Commands
                 if (string.IsNullOrEmpty(fileUrl))
                 {
                     return Result.Failure("An error occured");
-                }
+                }*/
                 var facilities = new List<Domain.Entities.Facility>();
                 if(request.FacilityType.Count > 0)
                 {
@@ -65,7 +66,6 @@ namespace HotelBooking.Application.Hotel.Commands
                             StatusDesc = Status.Available.ToString()
                         });
                     }
-                    await _context.Facilities.AddRangeAsync(facilities);
                 }
                 var newHotel = new Domain.Entities.Hotel
                 {
@@ -80,9 +80,8 @@ namespace HotelBooking.Application.Hotel.Commands
                     Facility = facilities,
                     CreatedDate = DateTime.Now
                 };
-                await _context.Hotels.AddAsync(newHotel);
-                await _context.SaveChangesAsync(cancellationToken);
-                return Result.Success("New Hotel added successfully", newHotel);
+                var result = await _hotelRepository.AddAsync(newHotel);
+                return Result.Success("New Hotel added successfully", result);
             }
             catch (Exception ex)
             {

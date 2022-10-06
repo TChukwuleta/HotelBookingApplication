@@ -30,12 +30,12 @@ namespace HotelBooking.Api.Controllers
             }
         }
 
-        [HttpPost("changehotelstatus")]
-        public async Task<ActionResult<Result>> ChangeHotelStatus(ChangeHotelStatusCommand command)
+        [HttpPost("changehotelstatus/{id}")]
+        public async Task<ActionResult<Result>> ChangeHotelStatus(int id)
         {
             try
             {
-                return await _mediator.Send(command);
+                return await _mediator.Send(new ChangeHotelStatusCommand { HotelId = id });
             }
             catch (Exception ex)
             {
@@ -53,6 +53,19 @@ namespace HotelBooking.Api.Controllers
             catch (Exception ex)
             {
                 return Result.Failure($"Updating hotel information failed. Error: {ex?.Message ?? ex?.InnerException?.Message}");
+            }
+        }
+
+        [HttpPost("bookhotel")]
+        public async Task<ActionResult<Result>> BookHotel(BookHotelCommand command)
+        {
+            try
+            {
+                return await _mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure($"Hotel booking failed. Error: {ex?.Message ?? ex?.InnerException?.Message}");
             }
         }
 

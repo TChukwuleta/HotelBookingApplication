@@ -1,4 +1,5 @@
 ﻿using HotelBooking.Application.Interfaces;
+using HotelBooking.Application.Interfaces.IRepositories;
 using HotelBooking.Application.Model;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,35 +19,25 @@ namespace HotelBooking.Application.Hotel.Queries
 
     public class GetAllHotelsQueryHandler : IRequestHandler<GetAllHotelsQuery, Result>
     {
-        private readonly IAppDbContext _context;
-        public GetAllHotelsQueryHandler(IAppDbContext context)
+        private readonly IHotelRepository _hotelRepository;
+        public GetAllHotelsQueryHandler(IHotelRepository hotelRepository)
         {
-            _context = context;
+            _hotelRepository = hotelRepository;
         }
         public async Task<Result> Handle(GetAllHotelsQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var hotels = await _context.Hotels.ToListAsync();
-                if(hotels.Count <= 0)
+                var hotels = await _hotelRepository.GetAllAsync();
+                if(hotels == null)
                 {
                     return Result.Failure("No hotel available");
                 }
                 if(request.Skip == 0 && request.Take == 0)
                 {
-                    var allHotels = new
-                    {
-                        Hotels = hotels,
-                        Count = hotels.Count
-                    };
-                    return Result.Success("Hotels retrieval was successful", allHotels);
+                    return Result.Success("Hotels retrieval was successful", hotels);
                 }
-                var prunedHotels = new
-                {
-                    Hotels = hotels.Skip(request.Skip).Take(request.Take).ToList(),
-                    Count = hotels.Count
-                };
-                return Result.Success("Hotels retrieval was successful", prunedHotels); 
+                return Result.Success("Hotels retrieval was successful", hotels.Skip(request.Skip).Take(request.Take).ToList()); 
             }
             catch (Exception ex)
             {

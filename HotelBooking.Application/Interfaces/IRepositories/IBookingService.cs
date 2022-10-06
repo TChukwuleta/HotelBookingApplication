@@ -1,6 +1,4 @@
 ﻿using HotelBooking.Application.Interfaces.IRepositories.Base;
-using HotelBooking.Domain.Entities;
-using HotelBooking.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelBooking.Application.Interfaces.IRepositories
 {
-    public interface IHotelRepository : IRepository<Domain.Entities.Hotel>
+    public interface IBookingService : IRepository<Domain.Entities.BookingTransactionRequest>
     {
     }
 }

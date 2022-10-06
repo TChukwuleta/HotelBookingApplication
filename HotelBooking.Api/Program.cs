@@ -36,8 +36,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(buil
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IHotelRepository, HotelRepository>();
 builder.Services.AddTransient<IUploadService, UploadService>();
-builder.Services.AddTransient<IPaystackService, PaystackService>();
 builder.Services.AddTransient<IApiClientService, ApiClientService>();
+builder.Services.AddTransient<IBookingService, BookingService>();
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
 
 var app = builder.Build();
