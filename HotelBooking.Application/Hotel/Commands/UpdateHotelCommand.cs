@@ -51,7 +51,7 @@ namespace HotelBooking.Application.Hotel.Commands
                 hotel.LastModifiedDate = DateTime.Now;
 
                 await _hotelRepository.UpdateAsync(hotel);
-                return Result.Success("Hotel details have been successfully updated");
+                return Result.Success("Hotel details have been successfully updated", hotel);
             }
             catch (Exception ex)
             {

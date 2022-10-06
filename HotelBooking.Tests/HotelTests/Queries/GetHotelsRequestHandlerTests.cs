@@ -32,6 +32,16 @@ namespace HotelBooking.Tests.HotelTests.Queries
         }
 
         [Fact]
+        public async void GetAllAvailableHotelsTests()
+        {
+            var handler = new GetAvailableHotelsQueryHandler(_hotelRepo.Object);
+            var result = await handler.Handle(new GetAvailableHotelsQuery(), CancellationToken.None);
+            result.ShouldBeOfType<Result>();
+            Assert.NotNull(result.Entity);
+            Assert.Equal(true, result.Succeeded);
+        }
+
+        [Fact]
         public async void GetSingleHotelTest()
         {
             var handler = new GetHotelByIdQueryHandler(_hotelRepo.Object);

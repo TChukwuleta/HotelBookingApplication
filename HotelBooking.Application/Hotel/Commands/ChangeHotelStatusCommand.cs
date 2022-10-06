@@ -55,7 +55,7 @@ namespace HotelBooking.Application.Hotel.Commands
                         break;
                 }
                 await _hotelRepository.UpdateAsync(hotel);
-                return Result.Success(message);
+                return Result.Success(message, hotel);
             }
             catch (Exception ex)
             {

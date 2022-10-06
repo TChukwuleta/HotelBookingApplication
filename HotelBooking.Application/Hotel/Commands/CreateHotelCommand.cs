@@ -41,16 +41,6 @@ namespace HotelBooking.Application.Hotel.Commands
                     return Result.Failure("Rating should be between 0 and 5");
                 }
                 var fileUrl = string.IsNullOrEmpty(request.Base64Image) ? $"{request.Name}.jpeg" : await _uploadService.UploadImage(request.Base64Image);
-                /*if (!string.IsNullOrEmpty(request.Base64Image))
-                {
-                    var fileName = $"{request.Name}_{DateTime.Now.Ticks}.{request.Extension}";
-                    //var imageByte = Convert.FromBase64String(request.Base64Image);
-                    fileUrl = await _uploadService.UploadImage(request.Base64Image);
-                }
-                if (string.IsNullOrEmpty(fileUrl))
-                {
-                    return Result.Failure("An error occured");
-                }*/
                 var facilities = new List<Domain.Entities.Facility>();
                 if(request.FacilityType.Count > 0)
                 {

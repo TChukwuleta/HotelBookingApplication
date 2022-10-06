@@ -19,7 +19,7 @@ namespace HotelBooking.Application.Hotel.Queries
     public class GetAvailableHotelsQueryHandler : IRequestHandler<GetAvailableHotelsQuery, Result>
     {
         private readonly IHotelRepository _hotelRepository;
-        public GetAvailableHotelsQueryHandler(IAppDbContext context, IHotelRepository hotelRepository)
+        public GetAvailableHotelsQueryHandler(IHotelRepository hotelRepository)
         {
             _hotelRepository = hotelRepository;
         }

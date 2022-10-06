@@ -33,8 +33,8 @@ namespace HotelBooking.Tests.Mocks
                 {
                     Id = 1,
                     CreatedDate = DateTime.Now,
-                    Status = Status.UnderReview,
-                    StatusDesc = Status.UnderReview.ToString(),
+                    Status = Status.Available,
+                    StatusDesc = Status.Available.ToString(),
                     Name = "Test Hotel",
                     Image = "testhotelimage.png",
                     Address = "Qatar 2022",
@@ -60,28 +60,14 @@ namespace HotelBooking.Tests.Mocks
                 }
             };
 
-            var newHotel = new Hotel
-            {
-                Id = 3,
-                CreatedDate = DateTime.Now,
-                Status = Status.UnderReview,
-                StatusDesc = Status.UnderReview.ToString(),
-                Name = "New Hotel",
-                Image = "newhotelimage.png",
-                Address = "New road",
-                Description = "Nothing to say here",
-                Rating = 3,
-                Price = 1000,
-                Facility = facilityies
-            };
-
             hotelRepository.Setup(c => c.GetAllAsync().Result).Returns(hotels);
             hotelRepository.Setup(c => c.GetByIdAsync(It.IsAny<int>()).Result).Returns((int id) => hotels.FirstOrDefault(c => c.Id == id));
             hotelRepository.Setup(c => c.AddAsync(It.IsAny<Hotel>()).Result).Returns((Hotel hotel) =>
             {
                 hotels.Add(hotel);
-                return newHotel;
+                return hotel;
             });
+            hotelRepository.Setup(c => c.UpdateAsync(It.IsAny<Hotel>())).Callback(() => { return; });
             return hotelRepository;
         }
     }
