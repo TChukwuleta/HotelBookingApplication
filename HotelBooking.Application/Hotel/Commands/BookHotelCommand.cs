@@ -71,7 +71,7 @@ namespace HotelBooking.Application.Hotel.Commands
             }
             catch (Exception ex)
             {
-                throw ex;
+                return Result.Failure(new string[] { "Hotel booking was not successful", ex?.Message ?? ex?.InnerException.Message });
             }
         }
     }

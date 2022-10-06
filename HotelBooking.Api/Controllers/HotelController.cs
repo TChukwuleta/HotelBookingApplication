@@ -99,11 +99,11 @@ namespace HotelBooking.Api.Controllers
 
         [HttpGet("getallhotels/{skip}/{take}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Result>> GetAllOrders(int skip, int take)
+        public async Task<ActionResult<Result>> GetAllOrders(int skip, int take, string? searchvalue)
         {
             try
             {
-                return await _mediator.Send(new GetAllHotelsQuery { Skip = skip, Take = take});
+                return await _mediator.Send(new GetAllHotelsQuery { Skip = skip, Take = take, SearchValue = searchvalue });
             }
             catch (Exception ex)
             {

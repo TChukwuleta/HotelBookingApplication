@@ -15,6 +15,7 @@ namespace HotelBooking.Application.Hotel.Queries
     {
         public int Skip { get; set; }
         public int Take { get; set; }
+        public string? SearchValue { get; set; }
     }
 
     public class GetAllHotelsQueryHandler : IRequestHandler<GetAllHotelsQuery, Result>
@@ -33,6 +34,15 @@ namespace HotelBooking.Application.Hotel.Queries
                 {
                     return Result.Failure("No hotel available");
                 }
+                if (!string.IsNullOrEmpty(request.SearchValue))
+                {
+                    hotels = hotels.Where(c => c.Name.ToLower().Contains(request.SearchValue) || c.Description.ToLower().Contains(request.SearchValue) || c.Address.ToLower().Contains(request.SearchValue)).ToList();
+                    if(hotels.Count <= 0 | hotels == null)
+                    {
+                        return Result.Failure("No hotel found based on the search");
+                    }
+                    return Result.Success("Hotel retrieval based on search was successful", hotels);
+                }
                 if(request.Skip == 0 && request.Take == 0)
                 {
                     return Result.Success("Hotels retrieval was successful", hotels);
@@ -41,8 +51,7 @@ namespace HotelBooking.Application.Hotel.Queries
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                return Result.Failure(new string[] { "All hotels retrieval was not successful", ex?.Message ?? ex?.InnerException.Message });
             }
         }
     }

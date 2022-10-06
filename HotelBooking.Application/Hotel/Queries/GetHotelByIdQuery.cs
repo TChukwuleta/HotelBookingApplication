@@ -36,7 +36,7 @@ namespace HotelBooking.Application.Hotel.Queries
             }
             catch (Exception ex)
             {
-                throw ex;
+                return Result.Failure(new string[] { "Getting hotel by Id was not successful", ex?.Message ?? ex?.InnerException.Message });
             }
         }
     }

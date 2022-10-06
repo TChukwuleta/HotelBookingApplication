@@ -41,8 +41,7 @@ namespace HotelBooking.Application.Hotel.Queries
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                return Result.Failure(new string[] { "Available hotels retrieval was not successful", ex?.Message ?? ex?.InnerException.Message });
             }
         }
     }

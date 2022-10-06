@@ -59,8 +59,7 @@ namespace HotelBooking.Application.Hotel.Commands
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                return Result.Failure(new string[] { "Changing hotel status was not successful", ex?.Message ?? ex?.InnerException.Message });
             }
         }
     }
