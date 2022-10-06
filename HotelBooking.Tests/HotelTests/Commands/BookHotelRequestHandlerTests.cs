@@ -23,11 +23,6 @@ namespace HotelBooking.Tests.HotelTests.Commands
             _bookingService = MockBookingRepository.GetBookingService();
         }
 
-
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public decimal Amount { get; set; }
-        public int HotelId { get; set; }
         [Fact]
         public async void UpdateHotelTests()
         {
